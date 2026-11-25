@@ -116,7 +116,6 @@ class ReservationApi {
     required String ville,
     required String adresse,
     required String numeroPermis,
-    required DateTime dateNaissance,
     required DateTime dateDebut,
     required DateTime dateFin,
     required int nombreJours,
@@ -134,7 +133,6 @@ class ReservationApi {
           'ville': ville,
           'adresse': adresse,
           'numeroPermis': numeroPermis,
-          'dateNaissance': isoDate(dateNaissance),
           'dateDebut': isoDate(dateDebut),
           'dateFin': isoDate(dateFin),
           'nombreJours': nombreJours,
@@ -217,7 +215,7 @@ class ReservationInfo {
   final int id;
   final String vehiculeNom, immatriculation, ville, adresse, numeroPermis;
   final String statut, clientNom, clientEmail;
-  final DateTime dateNaissance, dateDebut, dateFin;
+  final DateTime dateDebut, dateFin;
   final int nombreJours;
   final double prixParJour, prixEstime;
 
@@ -231,7 +229,6 @@ class ReservationInfo {
     required this.statut,
     required this.clientNom,
     required this.clientEmail,
-    required this.dateNaissance,
     required this.dateDebut,
     required this.dateFin,
     required this.nombreJours,
@@ -249,7 +246,6 @@ class ReservationInfo {
     statut: j['statut'] ?? 'EN_ATTENTE',
     clientNom: j['clientNom'] ?? '',
     clientEmail: j['clientEmail'] ?? '',
-    dateNaissance: DateTime.parse(j['dateNaissance']),
     dateDebut: DateTime.parse(j['dateDebut']),
     dateFin: DateTime.parse(j['dateFin']),
     nombreJours: (j['nombreJours'] as num).toInt(),

@@ -469,31 +469,28 @@ class _CatalogueVehiculesScreenState extends State<CatalogueVehiculesScreen> {
             ),
           ),
           Expanded(
-            child: ValueListenableBuilder<int>(
-              valueListenable: vehiculesVersion,
-              builder: (context, _, __) => GridView.builder(
-                padding: const EdgeInsets.all(12),
-                itemCount: _visible.length,
-                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                  maxCrossAxisExtent: 260,
-                  mainAxisExtent: 335,
-                  crossAxisSpacing: 12,
-                  mainAxisSpacing: 12,
-                ),
-                itemBuilder: (context, index) {
-                  final v = _visible[index];
-                  return buildVehiculeCard(
-                    v,
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => DetailVehiculeScreen(vehicule: v),
-                      ),
-                    ),
-                    onReserver: () => reserver(context, v),
-                  );
-                },
+            child: GridView.builder(
+              padding: const EdgeInsets.all(12),
+              itemCount: _visible.length,
+              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                maxCrossAxisExtent: 260,
+                mainAxisExtent: 335,
+                crossAxisSpacing: 12,
+                mainAxisSpacing: 12,
               ),
+              itemBuilder: (context, index) {
+                final v = _visible[index];
+                return buildVehiculeCard(
+                  v,
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => DetailVehiculeScreen(vehicule: v),
+                    ),
+                  ),
+                  onReserver: () => reserver(context, v),
+                );
+              },
             ),
           ),
         ],

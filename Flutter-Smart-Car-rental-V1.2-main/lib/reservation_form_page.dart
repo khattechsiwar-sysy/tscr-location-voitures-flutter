@@ -15,7 +15,6 @@ class ReservationFormPage extends StatefulWidget {
 class _ReservationFormPageState extends State<ReservationFormPage> {
   final _permis = TextEditingController();
   final _adresse = TextEditingController();
-  DateTime? _naissance;
   DateTime? _debut;
   DateTime? _fin;
   bool _loading = false;
@@ -69,17 +68,6 @@ class _ReservationFormPageState extends State<ReservationFormPage> {
     );
   }
 
-  Future<void> _choisirNaissance() async {
-    final now = DateTime.now();
-    final d = await showDatePicker(
-      context: context,
-      initialDate: _naissance ?? DateTime(now.year - 25, 1, 1),
-      firstDate: DateTime(1940),
-      lastDate: now,
-    );
-    if (d != null) setState(() => _naissance = d);
-  }
-
   Future<void> _choisirDebut() async {
     final d = await showDatePicker(
       context: context,
@@ -109,16 +97,6 @@ class _ReservationFormPageState extends State<ReservationFormPage> {
     if (_permis.text.trim().isEmpty) {
       return "Veuillez saisir le numéro de permis";
     }
-    if (_naissance == null) {
-      return "Veuillez choisir votre date de naissance";
-    }
-    final now = DateTime.now();
-    var age = now.year - _naissance!.year;
-    if (now.month < _naissance!.month ||
-        (now.month == _naissance!.month && now.day < _naissance!.day)) {
-      age--;
-    }
-    if (age < 18) return "Vous devez avoir au moins 18 ans";
     if (_adresse.text.trim().isEmpty) return "Veuillez saisir votre adresse";
     if (_debut == null || _fin == null) {
       return "Veuillez choisir les dates de location";
@@ -148,7 +126,6 @@ class _ReservationFormPageState extends State<ReservationFormPage> {
       ville: v.ville,
       adresse: _adresse.text.trim(),
       numeroPermis: _permis.text.trim(),
-      dateNaissance: _naissance!,
       dateDebut: _debut!,
       dateFin: _fin!,
       nombreJours: jours,
@@ -177,9 +154,6 @@ class _ReservationFormPageState extends State<ReservationFormPage> {
   @override
   Widget build(BuildContext context) {
     final v = widget.vehicule;
-    final prixJour = v.prixApresReductionCalculated;
-    final total = _jours * prixJour;
-
     return Scaffold(
       appBar: AppBar(title: Text("Réserver ${v.marque} ${v.modele}")),
       body: Center(
@@ -210,13 +184,6 @@ class _ReservationFormPageState extends State<ReservationFormPage> {
                       decoration: _deco("Numéro de permis", Icons.badge),
                     ),
                     const SizedBox(height: 12),
-                    _champDate(
-                      "Date de naissance",
-                      Icons.cake,
-                      _naissance,
-                      _choisirNaissance,
-                    ),
-                    const SizedBox(height: 12),
                     TextField(
                       controller: _adresse,
                       decoration: _deco("Adresse", Icons.home),
@@ -243,31 +210,6 @@ class _ReservationFormPageState extends State<ReservationFormPage> {
                       Icons.event_available,
                       _fin,
                       _choisirFin,
-                    ),
-                    const SizedBox(height: 20),
-                    Container(
-                      padding: const EdgeInsets.all(14),
-                      decoration: BoxDecoration(
-                        color: kPrimary.withOpacity(0.08),
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                      child: Column(
-                        children: [
-                          _ligne("Véhicule", "${v.marque} ${v.modele}"),
-                          _ligne("Ville", v.ville),
-                          _ligne("Prix / jour", "${fmt(prixJour)} DT"),
-                          _ligne(
-                            "Nombre de jours",
-                            _jours > 0 ? "$_jours" : "-",
-                          ),
-                          const Divider(),
-                          _ligne(
-                            "Prix estimé",
-                            _jours > 0 ? "${total.toStringAsFixed(2)} DT" : "-",
-                            gras: true,
-                          ),
-                        ],
-                      ),
                     ),
                     const SizedBox(height: 20),
                     ElevatedButton(
@@ -297,24 +239,6 @@ class _ReservationFormPageState extends State<ReservationFormPage> {
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _ligne(String label, String valeur, {bool gras = false}) {
-    final style = TextStyle(
-      fontWeight: gras ? FontWeight.bold : FontWeight.w500,
-      fontSize: gras ? 16 : 14,
-      color: gras ? kPrimary : Colors.black87,
-    );
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 3),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(label, style: TextStyle(color: Colors.grey[700])),
-          Text(valeur, style: style),
-        ],
       ),
     );
   }

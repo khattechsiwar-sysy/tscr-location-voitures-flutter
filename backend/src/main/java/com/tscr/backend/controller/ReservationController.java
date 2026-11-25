@@ -59,11 +59,13 @@ public class ReservationController {
             return error(HttpStatus.BAD_REQUEST, "Tous les champs sont obligatoires");
         }
 
-        LocalDate debut, fin, naissance;
+        LocalDate debut, fin, naissance = null;
         try {
             debut = LocalDate.parse(req.dateDebut());
             fin = LocalDate.parse(req.dateFin());
-            naissance = LocalDate.parse(req.dateNaissance());
+            if (!isBlank(req.dateNaissance())) {
+                naissance = LocalDate.parse(req.dateNaissance());
+            }
         } catch (DateTimeParseException | NullPointerException e) {
             return error(HttpStatus.BAD_REQUEST, "Dates invalides");
         }
@@ -74,7 +76,7 @@ public class ReservationController {
         if (fin.isBefore(debut)) {
             return error(HttpStatus.BAD_REQUEST, "La date de fin doit être après la date de début");
         }
-        if (Period.between(naissance, LocalDate.now()).getYears() < 18) {
+        if (naissance != null && Period.between(naissance, LocalDate.now()).getYears() < 18) {
             return error(HttpStatus.BAD_REQUEST, "Vous devez avoir au moins 18 ans");
         }
 
@@ -232,7 +234,7 @@ public class ReservationController {
         m.put("nombreJours", r.nombreJours);
         m.put("prixEstime", r.prixEstime);
         m.put("numeroPermis", r.numeroPermis);
-        m.put("dateNaissance", r.dateNaissance.toString());
+        m.put("dateNaissance", r.dateNaissance != null ? r.dateNaissance.toString() : null);
         m.put("adresse", r.adresse);
         m.put("statut", r.statut);
         m.put("dateCreation", r.dateCreation.toString());
